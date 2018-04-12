@@ -14,43 +14,34 @@
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
             grid-row-gap: 20px;
         }
 
         staged-progress {
             height: 20px;
-            grid-column: 1 / span 4;
+            grid-column: 1 / span 3;
         }
     </style>
 </head>
 
 <body>
     <div class="grid">
+
         <staged-progress value="100">
-            <stage-indicator type="major" value="0"></stage-indicator>
-            <stage-indicator type="minor" value="50"></stage-indicator>
-            <stage-indicator type="minor" value="100"></stage-indicator>
         </staged-progress>
 
-        <staged-progress value="30">
-            <stage-indicator type="major" value="0"></stage-indicator>
-            <stage-indicator type="minor" value="50"></stage-indicator>
-            <stage-indicator type="minor" value="100"></stage-indicator>
-        </staged-progress>
+        <stage-indicator type="minor" value="0"></stage-indicator>
+        <stage-indicator type="minor" value="50"></stage-indicator>
+        <stage-indicator type="minor" value="100"></stage-indicator>
 
-        <staged-progress value="20">
-            <stage-indicator type="major" value="0"></stage-indicator>
-            <stage-indicator type="minor" value="50"></stage-indicator>
-            <stage-indicator type="minor" value="100"></stage-indicator>
-        </staged-progress>
 
-        <staged-progress value="50">
+        <!-- <staged-progress value="30">
             <stage-indicator type="major" value="0"></stage-indicator>
             <stage-indicator type="minor" value="50"></stage-indicator>
             <stage-indicator type="minor" value="100"></stage-indicator>
-        </staged-progress>
+        </staged-progress> -->
     </div>
 </body>
 
