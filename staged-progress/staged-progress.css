@@ -1,0 +1,61 @@
+.progress {
+    width: 100%;
+    background-color: #ddd;
+    border-radius: 10px;
+    height: 100%;
+    position: relative;
+    --offset: 1.2rem;
+}
+
+.progress:after{
+    content: '';
+    position: absolute;    
+    top: calc(50% - .3rem);
+    left: 5px;   
+    border: 5px solid;
+    border-radius: 10px;
+}
+
+[data-status="pending"]:after {
+    border-color: coral;
+}
+
+[data-status="passed"]:after {
+    border-color:#8BC34A
+}
+
+[data-status="running"]:after {
+    border-color: cornflowerblue;
+} 
+
+[data-status="failed"]:after {
+    border-color:#F44336;
+} 
+
+[data-progress="5"]:after {
+    width: calc(5% - var(--offset));
+}
+
+[data-progress="10"]:after {
+    width: calc(10% - var(--offset));
+}
+
+[data-progress="20"]:after {
+    width: calc(20% - var(--offset));
+}
+
+[data-progress="30"]:after {
+    width: calc(30% - var(--offset));
+}
+
+[data-progress="40"]:after {
+    width: calc(40% - var(--offset));
+}
+
+[data-progress="50"]:after {
+    width: calc(50% - var(--offset));
+}
+
+[data-progress="100"]:after {    
+    width: calc(100% - var(--offset));
+}

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Progress Indicator</title>
+    <link rel="import" href="/staged-progress/staged-progress.html">
+    <style>
+        body {
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            grid-row-gap: 20px;
+        }
+
+        staged-progress {
+            height: 20px;
+            grid-column: 1 / span 4;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="grid">
+        <staged-progress value="100">
+            <stage-indicator type="major" value="0"></stage-indicator>
+            <stage-indicator type="minor" value="50"></stage-indicator>
+            <stage-indicator type="minor" value="100"></stage-indicator>
+        </staged-progress>
+
+        <staged-progress value="30">
+            <stage-indicator type="major" value="0"></stage-indicator>
+            <stage-indicator type="minor" value="50"></stage-indicator>
+            <stage-indicator type="minor" value="100"></stage-indicator>
+        </staged-progress>
+
+        <staged-progress value="20">
+            <stage-indicator type="major" value="0"></stage-indicator>
+            <stage-indicator type="minor" value="50"></stage-indicator>
+            <stage-indicator type="minor" value="100"></stage-indicator>
+        </staged-progress>
+
+        <staged-progress value="50">
+            <stage-indicator type="major" value="0"></stage-indicator>
+            <stage-indicator type="minor" value="50"></stage-indicator>
+            <stage-indicator type="minor" value="100"></stage-indicator>
+        </staged-progress>
+    </div>
+</body>
+
+</html>
