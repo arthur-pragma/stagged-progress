@@ -1,8 +1,57 @@
 <template id="staged-progress-template">
     <link rel="stylesheet" href="/staged-progress/staged-progress.css">
     <div class="progress">
+        <span></span><!-- change this to progress tag -->        
     </div>
 </template>
 
-<link rel="import" href="/stage-indicator/stage-indicator.html">
-<script src="/staged-progress/staged-progress.js"></script>
+<script>
+    class StagedProgress extends HTMLElement {
+
+        constructor() {
+
+            super();
+            this.render(); 
+        }
+
+        static get observedAttributes() { return ["value"]; };
+
+        get value() { 
+            return this.getAttribute('value') || this_value; 
+        };
+
+        set value(value) {
+            this._value = value;
+        };
+
+        connectedCallback() {
+                      
+        }
+
+        disconnectedCallback() {
+            // dispose here
+        }
+
+        attributeChangedCallback(name, oldValue, newValue) {
+
+            this.updateProgress(newValue);
+        }
+
+        render() {
+            const currentDocument = document.currentScript.ownerDocument;
+            const template = currentDocument.querySelector('#staged-progress-template').content.cloneNode(true); // move to connected callback            
+
+            this.appendChild(template);
+        }
+
+        updateProgress(value) {
+            const element = this.querySelector('.progress');
+            const span = this.querySelector('.progress > span');
+
+            element.setAttribute('data-progress', value);
+            span.style.width = value + "%"; // css variable for this, width is expansive (transform is less expensive)
+        }
+    }
+
+    customElements.define('staged-progress', StagedProgress);
+</script>

@@ -1,16 +1,35 @@
-.progress {
-    width: 100%;
-    background-color: #ddd;
-    height: 100%;
+staged-progress {
     position: relative;
 }
 
-.progress:after {
+staged-progress .progress {
+    width: 100%;   
+    height: 100%;
+    position: relative;  
+}
+
+staged-progress .progress > span {
+    display: block;
+    position: absolute;
+    top: calc(50% - 0.15rem);
+    width: 100%;
+    height: 4px;
+    border-radius: 5px;
+    background: repeating-linear-gradient( -45deg,
+    #54aff7,
+    #54aff7 5px,
+    #2196F3 5px,
+    #2196F3 10px);
+}
+
+staged-progress .progress:after {
     content: '';
     position: absolute;
-    top: calc(50% - 0.1rem);
-    left: 0;
-    border-bottom: 5px solid black;
+    width: 100%;
+    top: calc(50% - 0.3rem);    
+    height: 10px;    
+    z-index: -1;
+    background: #ddd;   
 }
 
 [data-status="pending"]:after {
@@ -22,37 +41,9 @@
 }
 
 [data-status="running"]:after {
-    border-color: cornflowerblue;
+    border-color: rgb(100, 149, 237);
 }
 
 [data-status="failed"]:after {
     border-color: #F44336;
-}
-
-[data-progress="5"]:after {
-    width: 5%
-}
-
-[data-progress="10"]:after {
-    width: 10%
-}
-
-[data-progress="20"]:after {
-    width: 20%
-}
-
-[data-progress="30"]:after {
-    width: 30%
-}
-
-[data-progress="40"]:after {
-    width: 40%
-}
-
-[data-progress="50"]:after {
-    width: 50%
-}
-
-[data-progress="100"]:after {
-    width: 100%
 }

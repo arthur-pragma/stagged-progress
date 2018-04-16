@@ -3,4 +3,76 @@
     <div class="stage-indicator"></div>
 </template>
 
-<script src="/stage-indicator/stage-indicator.js"></script>
+<script>
+    class StageIndicator extends HTMLElement {
+
+        static get observedAttributes() {
+            return ["type", "value"];
+        };
+
+        constructor() {
+            super();
+            this.render();
+        }
+
+        get type() {
+            return this.getAttribute("type") || this._type;
+        };
+        set type(value) {
+            this._type = value;
+        };
+
+        get value() {
+            return this.getAttribute("value") || this._value;
+        };
+        set value(value) {
+            this._value = value;
+        };
+
+        connectedCallback() {
+
+        }
+
+        disconnectedCallback() { }
+
+        render() {
+            const currentDocument = document.currentScript.ownerDocument;
+            const template = currentDocument.querySelector('#stage-indicator-template').content.cloneNode(true);
+
+            this.appendChild(template);
+        }
+
+        attributeChangedCallback(name, oldValue, newValue) {
+
+            switch (name) {
+
+                case 'type':
+                    return this.setStageType(newValue);
+                case 'value':
+                    return this.setStagePosition(newValue);
+            }
+        }
+
+        setStageType(type) {
+            let element = this.querySelector('.stage-indicator');
+            let types = ["major", "minor"];
+
+            if (element !== null || undefined) {
+                element.classList.remove(...types);
+                element.classList.add(type);
+            }
+        }
+
+        setStagePosition(value) {
+            let element = this.querySelector('.stage-indicator');
+
+            if (element !== null || undefined) {
+                element.setAttribute('data-value', value);
+                element.style.left = value + "%";
+            }
+        }
+
+    }
+
+    customElements.define('stage-indicator', StageIndicator);
+</script>

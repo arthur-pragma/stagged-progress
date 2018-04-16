@@ -21,10 +21,11 @@
         }
 
         get type() {
-            return this.getAttribute("type");
+            return this.getAttribute("type") || this._type;
         };
         set type(value) {
-            this.setAttribute("type", value);
+            this._type = value;
+            //this.setAttribute("type", value);
         };
 
         get value() {
@@ -57,8 +58,11 @@
             element.classList.add(type);
         }
 
-        setStagePosition() {
+        setStagePosition(value) {
+            let element = this.shadowRoot.querySelector('.stage-indicator');
 
+            element.setAttribute('data-value', value);
+            element.style.left = value + "%";
         }
 
     }
