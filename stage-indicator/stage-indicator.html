@@ -12,7 +12,10 @@
 
         constructor() {
             super();
-            this.render();
+            
+            this._type = null;
+            this._value = null;
+            this._stageIndicator = null;
         }
 
         get type() {
@@ -25,50 +28,80 @@
         get value() {
             return this.getAttribute("value") || this._value;
         };
+
         set value(value) {
             this._value = value;
         };
 
         connectedCallback() {
-
-        }
-
-        disconnectedCallback() { }
-
-        render() {
+            
             const currentDocument = document.currentScript.ownerDocument;
             const template = currentDocument.querySelector('#stage-indicator-template').content.cloneNode(true);
 
-            this.appendChild(template);
+            this.appendChild(template)
+
+            this._stageIndicator = this.querySelector('.stage-indicator');
+            this._stageIndicator.addEventListener("click", this.stageClicked);
+
+            const type = this.getAttribute('type');
+            const value = this.getAttribute('value');
+
+            if(type !== null)
+                this.setStageType(type);
+
+            if(value !== null)
+                this.setStagePosition(value);
         }
 
-        attributeChangedCallback(name, oldValue, newValue) {
+        disconnectedCallback() {
+            _
+         }      
+
+        attributeChangedCallback(name, oldValue, newValue) {          
 
             switch (name) {
 
                 case 'type':
-                    return this.setStageType(newValue);
+                    this.setStageType(newValue);
+                    break;
                 case 'value':
-                    return this.setStagePosition(newValue);
+                    this.setStagePosition(newValue)
+                    break;
+                default: break;
             }
         }
 
-        setStageType(type) {
-            let element = this.querySelector('.stage-indicator');
-            let types = ["major", "minor"];
+        stageClicked(e) {
+            
+            const progress = e.target.getAttribute('data-value');
 
-            if (element !== null || undefined) {
-                element.classList.remove(...types);
-                element.classList.add(type);
+            let event = new CustomEvent("UpdateProgress", {
+                detail: {
+                    progress: progress
+                },
+                bubbles: true
+            });
+
+            this.dispatchEvent(event);
+        };
+
+        setStageType(type) {                       
+
+            if (this._stageIndicator !== null) {
+
+                const types = ["major", "minor"];
+
+                this._stageIndicator.classList.remove(...types);
+                this._stageIndicator.classList.add(type);
             }
         }
 
-        setStagePosition(value) {
-            let element = this.querySelector('.stage-indicator');
+        setStagePosition(value) {            
 
-            if (element !== null || undefined) {
-                element.setAttribute('data-value', value);
-                element.style.left = value + "%";
+            if (this._stageIndicator !== null) {
+
+                this._stageIndicator.setAttribute('data-value', value);
+                this._stageIndicator.style.left = value + "%";
             }
         }
 

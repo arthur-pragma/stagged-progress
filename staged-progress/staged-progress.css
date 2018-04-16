@@ -1,5 +1,13 @@
 staged-progress {
     position: relative;
+    --status-pending:#FF9800;
+    --status-pending-lighten:#fba72a;
+    --status-running: #03A9F4;
+    --status-running-lighten: #47a9f7;
+    --status-passed:#4CAF50;    
+    --status-passed-lighten: #6cb16f;
+    --status-failed: #e63e32;
+    --status-failed-lighten:#ff6b60;
 }
 
 staged-progress .progress {
@@ -15,11 +23,30 @@ staged-progress .progress > span {
     width: 100%;
     height: 4px;
     border-radius: 5px;
+}
+
+staged-progress [data-status="pending"] > span {
     background: repeating-linear-gradient( -45deg,
-    #54aff7,
-    #54aff7 5px,
-    #2196F3 5px,
-    #2196F3 10px);
+    var(--status-pending-lighten),
+    var(--status-pending-lighten) 5px,
+    var(--status-pending) 5px,
+    var(--status-pending) 10px);
+}
+
+staged-progress [data-status="running"] > span {
+    background: repeating-linear-gradient( -45deg,
+    var(--status-running-lighten),
+    var(--status-running-lighten) 5px,
+    var(--status-running) 5px,
+    var(--status-running) 10px);
+}
+
+staged-progress [data-status="passed"] > span {
+    background: repeating-linear-gradient( -45deg,
+    var(--status-passed-lighten),
+    var(--status-passed-lighten) 5px,
+    var(--status-passed) 5px,
+    var(--status-passed) 10px);
 }
 
 staged-progress .progress:after {
@@ -30,20 +57,4 @@ staged-progress .progress:after {
     height: 10px;    
     z-index: -1;
     background: #ddd;   
-}
-
-[data-status="pending"]:after {
-    border-color: coral;
-}
-
-[data-status="passed"]:after {
-    border-color: #8BC34A
-}
-
-[data-status="running"]:after {
-    border-color: rgb(100, 149, 237);
-}
-
-[data-status="failed"]:after {
-    border-color: #F44336;
 }
