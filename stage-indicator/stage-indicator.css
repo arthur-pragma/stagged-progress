@@ -19,7 +19,7 @@ stage-indicator .major:before {
     width: 100%;
     height: 100%;
     border: 5px solid #ddd;
-    background:  #2196F3;
+    background:  #ddd;
     display: block;
     text-align: center;
 }
@@ -29,13 +29,13 @@ stage-indicator .minor:before {
     width: 100%;
     height: 100%;
     border: 5px solid #ddd;
-    background:  #2196F3;
+    background:  #ddd;
     display: block;
     text-align: center;
     border-radius: 50%;
 }
 
-staged-progress[status="pending"] .stage-indicator:before {
+staged-progress[status="pending"] .completed:before {
     background: var(--status-pending);
 }
 

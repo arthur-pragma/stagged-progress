@@ -43,66 +43,70 @@
             const currentDocument = document.currentScript.ownerDocument;
             const template = currentDocument.querySelector('#staged-progress-template').content.cloneNode(true);
 
+            console.log("stagged-progress connected");
+
             this.appendChild(template);
 
             this._progress = this.querySelector('.progress');
-
-            this.addEventListener('UpdateProgress', (e) => {
-                this._value = e.detail.progress;
-                this.setProgress(this._value);
-            });
 
             const initialProgress = this.getAttribute('value');
             const initialStatus = this.getAttribute('status');
 
             if (initialProgress !== null) {
                 this._value = initialProgress;
-                this.setProgress(this._value);
-            }          
-
-            if(initialStatus !== null) {
-                this._status = initialStatus;
-                this.setStatus(this._status);
+                this._setProgress(this._value);
             }
+
+            if (initialStatus !== null) {
+                this._status = initialStatus;
+                this._setStatus(this._status);
+            }
+
+            this.addEventListener('UpdateProgress', this._onUpdateProgress);
         }
 
         disconnectedCallback() {
             // dispose here
+             this.removeEventListener('UpdateProgress', this._onUpdateProgress);
         }
 
         attributeChangedCallback(name, oldValue, newValue) {
 
-            switch(name) {
+            switch (name) {
 
                 case "value":
-                    this.setProgress(newValue);
+                    this._setProgress(newValue);
                     break;
                 case "status":
-                    this.setStatus(newValue);
+                    this._setStatus(newValue);
                     break;
                 default:
                     break;
-            }            
+            }
         }
 
-        setProgress(value) {
+        _setProgress(value) {
 
             if (this._progress !== null) {
 
                 const span = this._progress.querySelector('span');
 
                 this._progress.setAttribute('data-progress', value);
-
                 span.style.width = value + "%"; // css variable for this, width is expansive (transform is less expensive)
+
+                  console.log("stagged-progress set progress");
             }
         }
 
-        setStatus(value) {
+        _setStatus(value) {
 
-            if (this._progress != null) {                
+            if (this._progress != null)
+                this._progress.setAttribute('data-status', value);
+        }
 
-                this._progress.setAttribute('data-status', value);               
-            }
+        _onUpdateProgress(event) {
+            this._value = event.detail.progress;
+            this._setProgress(this._value);
         }
     }
 

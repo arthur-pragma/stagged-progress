@@ -7,7 +7,7 @@
     class StageIndicator extends HTMLElement {
 
         static get observedAttributes() {
-            return ["type", "value"];
+            return ["type", "value", "completed"];
         };
 
         constructor() {
@@ -16,11 +16,13 @@
             this._type = null;
             this._value = null;
             this._stageIndicator = null;
+            this._completed = null;
         }
 
         get type() {
             return this.getAttribute("type") || this._type;
         };
+
         set type(value) {
             this._type = value;
         };
@@ -33,6 +35,18 @@
             this._value = value;
         };
 
+        get completed() {
+            return this.hasAttribute('completed')
+        }
+
+        set completed(value) {
+            if(value)
+                this.setAttribute('completed', '');
+            else
+                this.removeAttribute('completed');
+        }
+
+
         connectedCallback() {
             
             const currentDocument = document.currentScript.ownerDocument;
@@ -41,39 +55,46 @@
             this.appendChild(template)
 
             this._stageIndicator = this.querySelector('.stage-indicator');
-            this._stageIndicator.addEventListener("click", this.stageClicked);
 
             const type = this.getAttribute('type');
             const value = this.getAttribute('value');
 
             if(type !== null)
-                this.setStageType(type);
+                this._setStageType(type);
 
             if(value !== null)
-                this.setStagePosition(value);
+                this._setStagePosition(value);
+
+            this._stageIndicator.addEventListener("click", this._stageClicked); 
+
+             console.log("stagged-indicator connected");
         }
 
         disconnectedCallback() {
-            _
-         }      
+            this.removeEventListener('click', this._stageClicked);
+         }   
+
 
         attributeChangedCallback(name, oldValue, newValue) {          
 
             switch (name) {
 
                 case 'type':
-                    this.setStageType(newValue);
+                    this._setStageType(newValue);
                     break;
                 case 'value':
-                    this.setStagePosition(newValue)
+                    this._setStagePosition(newValue)
                     break;
+                case 'completed': 
+                    this.setCompleted(newValue);
                 default: break;
             }
         }
 
-        stageClicked(e) {
+        _stageClicked(e) {
             
             const progress = e.target.getAttribute('data-value');
+            
 
             let event = new CustomEvent("UpdateProgress", {
                 detail: {
@@ -85,7 +106,7 @@
             this.dispatchEvent(event);
         };
 
-        setStageType(type) {                       
+        _setStageType(type) {                       
 
             if (this._stageIndicator !== null) {
 
@@ -96,13 +117,22 @@
             }
         }
 
-        setStagePosition(value) {            
+        _setStagePosition(value) {            
 
             if (this._stageIndicator !== null) {
 
                 this._stageIndicator.setAttribute('data-value', value);
                 this._stageIndicator.style.left = value + "%";
             }
+        }
+
+        setCompleted() {
+           
+           if(this.completed) 
+                this._stageIndicator.classList.add('completed');
+            else
+                this._stageIndicator.classList.remove('completed');
+           
         }
 
     }
