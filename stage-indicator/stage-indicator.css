@@ -1,7 +1,7 @@
 stage-indicator {
-    --status-pending:#FF9800;
+    --status-pending: #FF9800;
     --status-running: #03A9F4;
-    --status-passed:#4CAF50; 
+    --status-passed: #4CAF50;
     --status-failed: #e63e32;
 }
 
@@ -19,7 +19,7 @@ stage-indicator .major:before {
     width: 100%;
     height: 100%;
     border: 5px solid #ddd;
-    background:  #ddd;
+    background: #ddd;
     display: block;
     text-align: center;
 }
@@ -29,7 +29,7 @@ stage-indicator .minor:before {
     width: 100%;
     height: 100%;
     border: 5px solid #ddd;
-    background:  #ddd;
+    background: #ddd;
     display: block;
     text-align: center;
     border-radius: 50%;
@@ -39,14 +39,14 @@ staged-progress[status="pending"] .completed:before {
     background: var(--status-pending);
 }
 
-staged-progress[status="running"] .stage-indicator:before {
+staged-progress[status="running"] .completed:before {
     background: var(--status-running);
 }
 
-staged-progress[status="passed"] .stage-indicator:before {
+staged-progress[status="passed"] .completed:before {
     background: var(--status-passed);
 }
 
-staged-progress[status="failed"] .stage-indicator:before {
+staged-progress[status="failed"] .completed:before {
     background: var(--status-failed);
 }

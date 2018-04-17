@@ -52,22 +52,18 @@
             const initialProgress = this.getAttribute('value');
             const initialStatus = this.getAttribute('status');
 
-            if (initialProgress !== null) {
-                this._value = initialProgress;
-                this._setProgress(this._value);
-            }
+            if (initialProgress !== null)
+                this._setProgress(initialProgress);
 
-            if (initialStatus !== null) {
-                this._status = initialStatus;
-                this._setStatus(this._status);
-            }
+            if (initialStatus !== null)
+                this._setStatus(initialStatus);
 
-            this.addEventListener('UpdateProgress', this._onUpdateProgress);
+            this.addEventListener('fastTrackProgress', this._onUpdateProgress);
         }
 
         disconnectedCallback() {
             // dispose here
-             this.removeEventListener('UpdateProgress', this._onUpdateProgress);
+            this.removeEventListener('fastTrackProgress', this._onUpdateProgress);
         }
 
         attributeChangedCallback(name, oldValue, newValue) {
@@ -92,9 +88,25 @@
                 const span = this._progress.querySelector('span');
 
                 this._progress.setAttribute('data-progress', value);
-                span.style.width = value + "%"; // css variable for this, width is expansive (transform is less expensive)
+                span.style.width = value + "%"; // css variable for this, width is expansive (transform is less expensive)           
 
-                  console.log("stagged-progress set progress");
+                // update the stage-indicator here 
+
+                const stages = this.querySelectorAll('stage-indicator');
+
+                [].forEach.call(stages, item => {
+                    const element = item.querySelector('.stage-indicator');
+
+                    if (element) {
+                        const stageValue = Number(item.getAttribute('value'));
+                        const progress = Number(value);
+
+                        if (progress >= stageValue)
+                            element.classList.add('completed');
+                        else
+                            element.classList.remove('completed');
+                    }
+                });
             }
         }
 
