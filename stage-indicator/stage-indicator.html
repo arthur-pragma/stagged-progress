@@ -7,25 +7,15 @@
     class StageIndicator extends HTMLElement {
 
         static get observedAttributes() {
-            return ["type", "value", "completed"];
+            return ["value"];
         };
 
         constructor() {
             super();
 
-            this._type = null;
-            this._value = null;
-            this._stageIndicator = null;
-            this._completed = null;
+            this._value;
+            this._isInitialized;
         }
-
-        get type() {
-            return this.getAttribute("type") || this._type;
-        };
-
-        set type(value) {
-            this._type = value;
-        };
 
         get value() {
             return this.getAttribute("value") || this._value;
@@ -35,110 +25,88 @@
             this._value = value;
         };
 
-        get completed() {
-            return this.hasAttribute('completed')
-        }
-
-        set completed(value) {
-            if (value)
-                this.setAttribute('completed', '');
-            else
-                this.removeAttribute('completed');
-        }
-
         connectedCallback() {
 
             const currentDocument = document.currentScript.ownerDocument;
             const template = currentDocument.querySelector('#stage-indicator-template').content.cloneNode(true);
 
             this.appendChild(template);
+            this._isInitialized = true;
 
-            console.log("staged-indicator connected");
+            if (this.value) {
+                this.setStagePosition(this.value);
+                this.setCompleted();
+            }
 
-            this._stageIndicator = this.querySelector('.stage-indicator');
+            this.addEventListener("click", this.stageClicked);
 
-            const type = this.getAttribute('type');
-            const value = this.getAttribute('value');
-            const progress = this.parentElement.getAttribute('value');
+            this.parentElement.addEventListener("onProgressChanged", (e) => {
 
-            if (type !== null)
-                this._setStageType(type);
+                const progress = Number(e.detail.progress);
+                const value = Number(this.value);
+                const element = this.querySelector('.stage-indicator');
 
-            if (value !== null)
-                this._setStagePosition(value);
+                if (progress >= value)
+                    element.classList.add("completed");
+                else
+                    element.classList.remove("completed");
+            });
 
-            if (progress !== null)
-                this._setCompleted(progress);
-
-            this._stageIndicator.addEventListener("click", this._stageClicked);
+            //this.parentElement.addEventListener("onProgressChanged", this.onProgressHandler);
         }
 
         disconnectedCallback() {
-            this.removeEventListener('click', this._stageClicked);
-            this.removeEventListener('progressChanged', this._onProgressChange);
+
+            this.removeEventListener('click', this.stageClicked);
         }
 
         attributeChangedCallback(name, oldValue, newValue) {
 
-            switch (name) {
+            if (!this._isInitialized)
+                return;
 
-                case 'type':
-                    this._setStageType(newValue);
-                    break;
-                case 'value':
-                    this._setStagePosition(newValue)
-                    break;
-                case 'completed':
-                    this._setCompleted(newValue);
-                default:
-                    break;
-            }
+            this.setStagePosition(newValue);
         }
 
-        _stageClicked(e) {
+        stageClicked(e) {
 
+            const element = this.querySelector('.stage-indicator');
             const progress = e.target.getAttribute('data-value');
 
-            let event = new CustomEvent("fastTrackProgress", {
-                detail: {
-                    progress: progress
-                },
-                bubbles: true
-            });
-
-            this.dispatchEvent(event);
+            this.parentElement.value = progress;
+            element.classList.add('completed');
         };
 
-        _setStageType(type) {
+        setStagePosition(value) {
 
-            if (this._stageIndicator !== null) {
+            if (value) {
+                const element = this.querySelector('.stage-indicator');
 
-                const types = ["major", "minor"];
-
-                this._stageIndicator.classList.remove(...types);
-                this._stageIndicator.classList.add(type);
+                element.setAttribute('data-value', value);
+                element.style.left = value + "%";
             }
         }
 
-        _setStagePosition(value) {
-
-            if (this._stageIndicator !== null) {
-
-                this._stageIndicator.setAttribute('data-value', value);
-                this._stageIndicator.style.left = value + "%";
-            }
-        }
-
-        _setCompleted(value) {
-
-            const stageValue = Number(this.getAttribute('value'));
-            const progress = Number(value);
+        setCompleted() {
+            const progress = Number(this.parentElement.value);
+            const value = Number(this.value);
             const element = this.querySelector('.stage-indicator');
 
-            if (progress >= stageValue)
+            if (progress >= value)
                 element.classList.add('completed');
             else
                 element.classList.remove('completed');
+        }
+
+        onProgressHandler(e) {
+            const progress = Number(e.detail.progress);
+            const value = Number(this.value);
+            const element = this.querySelector('.stage-indicator');
+
+            if (progress >= value)
+                element.classList.add("completed");
+            else
+                element.classList.remove("completed");
         }
     }
 

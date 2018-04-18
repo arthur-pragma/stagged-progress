@@ -1,11 +1,11 @@
 staged-progress {
     position: relative;
     --status-pending:#FF9800;
-    --status-pending-lighten:#fba72a;
+    --status-pending-lighten:#d2891d;
     --status-running: #03A9F4;
-    --status-running-lighten: #47a9f7;
+    --status-running-lighten: #388dd0;
     --status-passed:#4CAF50;    
-    --status-passed-lighten: #6cb16f;
+    --status-passed-lighten: #3b9a3f;
     --status-failed: #e63e32;
     --status-failed-lighten:#ff6b60;
 }
@@ -20,20 +20,9 @@ staged-progress .progress > span {
     display: block;
     position: absolute;
     top: calc(50% - 0.15rem);
-    width: 100%;
+    width: 0;
     height: 4px;
     border-radius: 5px;
-}
-
-staged-progress [data-status="pending"] > span {
-    background: repeating-linear-gradient( -45deg,
-    var(--status-pending-lighten),
-    var(--status-pending-lighten) 5px,
-    var(--status-pending) 5px,
-    var(--status-pending) 10px);
-}
-
-staged-progress [data-status="running"] > span {
     background: repeating-linear-gradient( -45deg,
     var(--status-running-lighten),
     var(--status-running-lighten) 5px,
@@ -41,12 +30,37 @@ staged-progress [data-status="running"] > span {
     var(--status-running) 10px);
 }
 
-staged-progress [data-status="passed"] > span {
+staged-progress.status-running > .progress > span {
+    background: repeating-linear-gradient( -45deg,
+    var(--status-running-lighten),
+    var(--status-running-lighten) 5px,
+    var(--status-running) 5px,
+    var(--status-running) 10px);
+}
+
+staged-progress.status-pending > .progress > span {
+    background: repeating-linear-gradient( -45deg,
+    var(--status-pending-lighten),
+    var(--status-pending-lighten) 5px,
+    var(--status-pending) 5px,
+    var(--status-pending) 10px);
+}
+
+
+staged-progress.status-passed > .progress > span  {
     background: repeating-linear-gradient( -45deg,
     var(--status-passed-lighten),
     var(--status-passed-lighten) 5px,
     var(--status-passed) 5px,
     var(--status-passed) 10px);
+}
+
+staged-progress.status-failed > .progress > span  {
+    background: repeating-linear-gradient( -45deg,
+    var(--status-failed-lighten),
+    var(--status-failed-lighten) 5px,
+    var(--status-failed) 5px,
+    var(--status-failed) 10px);
 }
 
 staged-progress .progress:after {
