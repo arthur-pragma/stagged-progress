@@ -1,46 +1,55 @@
-stage-indicator {
+stage-indicator {    
     --status-pending: #FF9800;
     --status-running: #03A9F4;
     --status-passed: #4CAF50;
     --status-failed: #e63e32;
-}
+    --width: 60px;
+    --height: 60px;
 
-stage-indicator .stage-indicator {
+    width: var(--width);
+    height: var(--height);
     display: inline-block;
     position: absolute;
     top: 0;
-    width: 50px;
-    height: 50px;
     z-index: 1;
-}
-
-stage-indicator .stage-indicator:before {
-    content: '';
-    width: 100%;
-    height: 100%;
-    border: 5px solid #ddd;
-    background: #ddd;
-    display: block;
-    text-align: center;
     border-radius: 50%;
+    background: #ddd;
 }
 
-stage-indicator .major:before {   
+stage-indicator.major {   
     border-radius: 0;
 }
 
-staged-progress.status-pending stage-indicator .completed:before {
+stage-indicator .stage-icon {
+   position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+stage-indicator .stage-icon svg {
+   position: relative;  
+   top: calc(50% - 1rem);
+   visibility: hidden;
+   fill: white;
+}
+
+stage-indicator.completed .stage-icon svg {
+    visibility: visible;
+}
+
+staged-progress.status-pending stage-indicator.completed {
     background: var(--status-pending);
 }
 
-staged-progress.status-running stage-indicator .completed:before {
+staged-progress.status-running stage-indicator.completed {
     background: var(--status-running);
 }
 
-staged-progress.status-passed stage-indicator .completed:before {
+staged-progress.status-passed stage-indicator.completed {
     background: var(--status-passed);
 }
 
-staged-progress.status-failed stage-indicator .completed:before {
+staged-progress.status-failed stage-indicator.completed {
     background: var(--status-failed);
 }

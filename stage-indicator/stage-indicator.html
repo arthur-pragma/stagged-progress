@@ -1,6 +1,5 @@
 <template id="stage-indicator-template">
     <link rel="stylesheet" href="/stage-indicator/stage-indicator.css">
-    <div class="stage-indicator"></div>
 </template>
 
 <script>
@@ -10,20 +9,12 @@
             return ["value", "title"];
         };
 
-        constructor() {
-            super();
-            this._value;
-            this._title;
-            this._isInitialized;
-            this.onProgressHandle;
-        }
-
         get value() {
             return this.getAttribute("value") || this._value;
         };
 
         set value(value) {
-            this._value = value;            
+            this._value = value;
         };
 
         get title() {
@@ -34,32 +25,53 @@
             this._title = value;
         }
 
+        constructor() {
+            super();
+            this._value;
+            this._title;
+            this._isInitialized;
+            this.onStageClickHandle;
+            this.onProgressHandle;
+        }
+
+        dispose() {
+
+            this.removeEventListener('click', this.onStageClickHandle);
+            this.removeEventListener('onProgressChanged', this.onProgressHandle);
+
+            this.onStageClickHandle = null;
+            this.onProgressHandle = null;
+            this._value = null;
+            this._title = null;
+            this._isInitialized = null;
+        }
+
+
         connectedCallback() {
 
             this._isInitialized = true;
             const currentDocument = document.currentScript.ownerDocument;
             const template = currentDocument.querySelector('#stage-indicator-template').content.cloneNode(true);
 
-            this.appendChild(template);          
+            this.appendChild(template);
 
             if (this.value) {
                 this.setStagePosition(this.value);
                 this.setCompleted(this.parentElement.value)
             };
 
-            this.addEventListener("click", this.stageClicked);
-
+            this.onStageClickHandle = this.onStageClicked.bind(this);
             this.onProgressHandle = this.onProgress.bind(this);
+
+            this.addEventListener("click", this.onStageClickHandle);
             this.parentElement.addEventListener("onProgressChanged", this.onProgressHandle);
         }
 
         disconnectedCallback() {
-
-            this.removeEventListener('click', this.stageClicked);
-            this.removeEventListener('onProgressChanged', this.onProgressHandle);
+            this.dispose();
         }
 
-        attributeChangedCallback(name, oldValue, newValue) {          
+        attributeChangedCallback(name, oldValue, newValue) {
 
             if (!this._isInitialized)
                 return;
@@ -68,54 +80,49 @@
             this.setCompleted(this.parentElement.value);
         }
 
-        stageClicked(e) {
-
-            const element = this.querySelector('.stage-indicator');
-            const progress = e.target.getAttribute('data-value');
-
-            this.parentElement.value = progress;
-            element.classList.add('completed');
-        };
-
         setStagePosition(value) {
 
-            if (value) {
-                const element = this.querySelector('.stage-indicator');
-
-                element.setAttribute('data-value', value);
-                element.style.left = value + "%";
-            }
+            if (value)
+                this.style.left = value + "%";
         }
 
-        setCompleted(progress) {           
-            
-            const value = Number(this.value);
-            const element = this.querySelector('.stage-indicator');
+        setCompleted(progress) {
 
-            if(!isNaN(progress)) {
-                
+            const value = Number(this.value);
+
+            if (!isNaN(progress)) {
+
                 const numericProgress = Number(progress);
 
-                  if (numericProgress >= value)
-                    element.classList.add('completed');
-                else
-                    element.classList.remove('completed');
+                numericProgress >= value
+                    ? this.classList.add('completed')
+                    : this.classList.remove('completed');
             }
             else {
 
-                if(this.parentElement.value === this.title) {
+                if (this.parentElement.value === this.title) {
 
                     this.parentElement.value = this.value;
-                    element.classList.add('completed');
-                }                    
-            }      
+                    this.classList.add('completed');
+                }
+                else
+                    this.classList.remove('completed');
+            }
         }
 
+        onStageClicked(e) {
+
+            const position = this.value;
+
+            this.parentElement.value = position;
+            this.classList.add('completed');
+        };
+
         onProgress(event) {
-            
+
             const progress = Number(event.detail.progress);
 
-            this.setCompleted(progress);        
+            this.setCompleted(progress);
         }
     }
 

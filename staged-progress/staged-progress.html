@@ -8,14 +8,6 @@
 <script>
     class StagedProgress extends HTMLElement {
 
-        constructor() {
-            super();
-            this._isIntialized;
-            this._value;
-            this._min = 0;
-            this._max = 100;
-        }
-
         static get observedAttributes() {
             return ["value"];
         };
@@ -33,8 +25,23 @@
             this.setProgress(value);
         };
 
-        connectedCallback() {
+        constructor() {
+            super();
+            this._isIntialized;
+            this._value;
+            this._min = 0;
+            this._max = 100;
+        }
 
+        dispose() {
+            this._value = null;
+            this._isIntialized = null;
+            this._min = null;
+            this._max = null;            
+        }
+
+        connectedCallback() {   
+                   
             const currentDocument = document.currentScript.ownerDocument;
             const template = currentDocument.querySelector('#staged-progress-template').content.cloneNode(true);
 
@@ -45,16 +52,17 @@
                 this.setProgress(this.value);
         }
 
-        disconnectedCallback() {           
+        disconnectedCallback() {   
+            this.dispose();
         }
 
-        attributeChangedCallback(name, oldValue, newValue) {
+        attributeChangedCallback(name, oldValue, newValue) {            
             
             if (this._isIntialized === true)
                 this.setProgress(newValue);
         }
 
-        setProgress(value) {
+        setProgress(value) {           
 
             if (this.validProgress(value)) {
                 const progress = this.querySelector('.progress');
