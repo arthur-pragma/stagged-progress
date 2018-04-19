@@ -7,14 +7,15 @@
     class StageIndicator extends HTMLElement {
 
         static get observedAttributes() {
-            return ["value"];
+            return ["value", "title"];
         };
 
         constructor() {
             super();
-
             this._value;
+            this._title;
             this._isInitialized;
+            this.onProgressHandle;
         }
 
         get value() {
@@ -22,50 +23,49 @@
         };
 
         set value(value) {
-            this._value = value;
+            this._value = value;            
         };
+
+        get title() {
+            return this.getAttribute('title') || this._title;
+        }
+
+        set title(value) {
+            this._title = value;
+        }
 
         connectedCallback() {
 
+            this._isInitialized = true;
             const currentDocument = document.currentScript.ownerDocument;
             const template = currentDocument.querySelector('#stage-indicator-template').content.cloneNode(true);
 
-            this.appendChild(template);
-            this._isInitialized = true;
+            this.appendChild(template);          
 
             if (this.value) {
                 this.setStagePosition(this.value);
-                this.setCompleted();
-            }
+                this.setCompleted(this.parentElement.value)
+            };
 
             this.addEventListener("click", this.stageClicked);
 
-            this.parentElement.addEventListener("onProgressChanged", (e) => {
-
-                const progress = Number(e.detail.progress);
-                const value = Number(this.value);
-                const element = this.querySelector('.stage-indicator');
-
-                if (progress >= value)
-                    element.classList.add("completed");
-                else
-                    element.classList.remove("completed");
-            });
-
-            //this.parentElement.addEventListener("onProgressChanged", this.onProgressHandler);
+            this.onProgressHandle = this.onProgress.bind(this);
+            this.parentElement.addEventListener("onProgressChanged", this.onProgressHandle);
         }
 
         disconnectedCallback() {
 
             this.removeEventListener('click', this.stageClicked);
+            this.removeEventListener('onProgressChanged', this.onProgressHandle);
         }
 
-        attributeChangedCallback(name, oldValue, newValue) {
+        attributeChangedCallback(name, oldValue, newValue) {          
 
             if (!this._isInitialized)
                 return;
 
             this.setStagePosition(newValue);
+            this.setCompleted(this.parentElement.value);
         }
 
         stageClicked(e) {
@@ -87,26 +87,35 @@
             }
         }
 
-        setCompleted() {
-            const progress = Number(this.parentElement.value);
+        setCompleted(progress) {           
+            
             const value = Number(this.value);
             const element = this.querySelector('.stage-indicator');
 
-            if (progress >= value)
-                element.classList.add('completed');
-            else
-                element.classList.remove('completed');
+            if(!isNaN(progress)) {
+                
+                const numericProgress = Number(progress);
+
+                  if (numericProgress >= value)
+                    element.classList.add('completed');
+                else
+                    element.classList.remove('completed');
+            }
+            else {
+
+                if(this.parentElement.value === this.title) {
+
+                    this.parentElement.value = this.value;
+                    element.classList.add('completed');
+                }                    
+            }      
         }
 
-        onProgressHandler(e) {
-            const progress = Number(e.detail.progress);
-            const value = Number(this.value);
-            const element = this.querySelector('.stage-indicator');
+        onProgress(event) {
+            
+            const progress = Number(event.detail.progress);
 
-            if (progress >= value)
-                element.classList.add("completed");
-            else
-                element.classList.remove("completed");
+            this.setCompleted(progress);        
         }
     }
 

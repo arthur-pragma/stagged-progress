@@ -48,10 +48,10 @@
 <body>
     <div class="grid">
 
-        <staged-progress value="25" class="item status-pending">
-            <stage-indicator type="minor" value="0"></stage-indicator>
-            <stage-indicator type="minor" value="50"></stage-indicator>
-            <stage-indicator type="minor" value="100"></stage-indicator>
+        <staged-progress value="Step 2" class="item status-pending">
+            <stage-indicator type="minor" value="0" title="Step 1"></stage-indicator>
+            <stage-indicator type="minor" value="50" title="Step 2"></stage-indicator>
+            <stage-indicator type="minor" value="100" title="Step 3"></stage-indicator>
         </staged-progress>
 
         <staged-progress value="88" class="item status-running">
@@ -59,25 +59,6 @@
             <stage-indicator type="minor" value="50"></stage-indicator>
             <stage-indicator type="minor" value="100"></stage-indicator>
         </staged-progress>
-
-        <staged-progress value="45" class="item status-failed">
-            <stage-indicator type="minor" value="0"></stage-indicator>
-            <stage-indicator type="minor" value="50"></stage-indicator>
-            <stage-indicator type="minor" value="100"></stage-indicator>
-        </staged-progress>
-
-        <staged-progress value="100" class="item status-passed">
-            <stage-indicator type="minor" value="0"></stage-indicator>
-            <stage-indicator type="minor" value="50"></stage-indicator>
-            <stage-indicator type="minor" value="100"></stage-indicator>
-        </staged-progress>
-
-        <staged-progress value="25" class="item status-failed">
-            <stage-indicator type="minor" value="0"></stage-indicator>
-            <stage-indicator type="minor" value="50"></stage-indicator>
-            <stage-indicator type="minor" value="100"></stage-indicator>
-        </staged-progress>
-
 
     </div>
     <link rel="import" href="/staged-progress/staged-progress.html">
