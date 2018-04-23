@@ -9,21 +9,26 @@
     class StagedProgress extends HTMLElement {
 
         static get observedAttributes() {
-            return ["value"];
+            return ["aria-value"];
         };
 
         get value() {
-            return this.getAttribute('value') || this._value;
+            return this.getAttribute('aria-value') || this._value;
         };
 
-        set value(value) {
-
-            if (!this.validProgress(value) || this._value === value)
-                return;
+        set value(value) {            
 
             this._value = value;
-            this.setProgress(value);
+            this.setAttribute('aria-value', value);
         };
+
+        set min(value) {
+            this._min = value;
+        };
+
+        set max(value) {
+            this._max = value;
+        }
 
         constructor() {
             super();
@@ -62,13 +67,18 @@
                 this.setProgress(newValue);
         }
 
+        setDefaultAttributes() {
+
+        }       
+
         setProgress(value) {           
 
             if (this.validProgress(value)) {
                 const progress = this.querySelector('.progress');
-                const span = progress.querySelector('span');
+                const span = progress.querySelector('span');                
 
-                progress.setAttribute('data-progress', value);
+                this.setAttribute('aria-valuenow', value);
+                progress.setAttribute('data-progress', value);                
                 span.style.width = value + "%";
 
                 this.dispatchEvent(new CustomEvent('onProgressChanged', {

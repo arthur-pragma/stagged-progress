@@ -6,11 +6,11 @@
     class StageIndicator extends HTMLElement {
 
         static get observedAttributes() {
-            return ["value", "title"];
+            return ["aria-value", "title"];
         };
 
         get value() {
-            return this.getAttribute("value") || this._value;
+            return this.getAttribute("aria-value") || this._value;
         };
 
         set value(value) {
@@ -30,22 +30,19 @@
             this._value;
             this._title;
             this._isInitialized;
-            this.onStageClickHandle;
             this.onProgressHandle;
         }
 
         dispose() {
 
-            this.removeEventListener('click', this.onStageClickHandle);
+            this.removeEventListener('click', this.onStageClicked);
             this.removeEventListener('onProgressChanged', this.onProgressHandle);
 
-            this.onStageClickHandle = null;
             this.onProgressHandle = null;
             this._value = null;
             this._title = null;
             this._isInitialized = null;
         }
-
 
         connectedCallback() {
 
@@ -57,13 +54,12 @@
 
             if (this.value) {
                 this.setStagePosition(this.value);
-                this.setCompleted(this.parentElement.value)
+                this.setCompletedState(this.parentElement.value)
             };
 
-            this.onStageClickHandle = this.onStageClicked.bind(this);
             this.onProgressHandle = this.onProgress.bind(this);
 
-            this.addEventListener("click", this.onStageClickHandle);
+            this.addEventListener("click", this.onStageClicked);
             this.parentElement.addEventListener("onProgressChanged", this.onProgressHandle);
         }
 
@@ -77,7 +73,7 @@
                 return;
 
             this.setStagePosition(newValue);
-            this.setCompleted(this.parentElement.value);
+            this.setCompletedState(this.parentElement.value);
         }
 
         setStagePosition(value) {
@@ -86,28 +82,32 @@
                 this.style.left = value + "%";
         }
 
-        setCompleted(progress) {
+        setCompletedState(progress) {
 
+            if (!isNaN(progress))
+                this.setNumericProgressState(progress);
+            else 
+                this.setEnumProgressState();
+        }
+
+        setNumericProgressState(progress) {
             const value = Number(this.value);
+            const numericProgress = Number(progress);
 
-            if (!isNaN(progress)) {
+            numericProgress >= value
+                ? this.classList.add('completed')
+                : this.classList.remove('completed');
+        }
 
-                const numericProgress = Number(progress);
+        setEnumProgressState() {
 
-                numericProgress >= value
-                    ? this.classList.add('completed')
-                    : this.classList.remove('completed');
+            if (this.parentElement.value === this.title) {
+
+                this.parentElement.value = this.value;
+                this.classList.add('completed');
             }
-            else {
-
-                if (this.parentElement.value === this.title) {
-
-                    this.parentElement.value = this.value;
-                    this.classList.add('completed');
-                }
-                else
-                    this.classList.remove('completed');
-            }
+            else
+                this.classList.remove('completed');
         }
 
         onStageClicked(e) {
@@ -122,7 +122,7 @@
 
             const progress = Number(event.detail.progress);
 
-            this.setCompleted(progress);
+            this.setCompletedState(progress);
         }
     }
 
