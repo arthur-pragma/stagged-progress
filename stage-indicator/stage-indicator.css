@@ -14,27 +14,21 @@ stage-indicator {
     z-index: 1;
     border-radius: 50%;
     background: #ddd;
+    text-align: center;
 }
 
 stage-indicator.major {   
     border-radius: 0;
 }
 
-stage-indicator .stage-icon {
-   position: relative;
-    width: 100%;
-    height: 100%;
-    text-align: center;
+stage-indicator svg {
+    position: relative;
+    visibility: hidden;
+    fill: white;
+    top: calc(50% - 1rem);   
 }
 
-stage-indicator .stage-icon svg {
-   position: relative;  
-   top: calc(50% - 1rem);
-   visibility: hidden;
-   fill: white;
-}
-
-stage-indicator.completed .stage-icon svg {
+stage-indicator.completed svg {
     visibility: visible;
 }
 

@@ -84,15 +84,25 @@
 
         setCompletedState(progress) {
 
-            if (!isNaN(progress))
-                this.setNumericProgressState(progress);
-            else 
-                this.setEnumProgressState();
+            const progressType = this.parentElement.getProgressType();
+
+            switch(progressType) {
+
+                case "numeric":
+                    this.setNumericProgressState(progress);
+                    break;
+                case "enum":
+                    this.setEnumProgressState(progress);
+                    break;
+                default:
+                    console.log("unsupported progress type");
+            }        
         }
 
         setNumericProgressState(progress) {
-            const value = Number(this.value);
-            const numericProgress = Number(progress);
+
+            const value = this.convertToNumber(this.value);
+            const numericProgress = this.convertToNumber(progress);
 
             numericProgress >= value
                 ? this.classList.add('completed')
@@ -120,9 +130,13 @@
 
         onProgress(event) {
 
-            const progress = Number(event.detail.progress);
+            const progress = this.convertToNumber(event.detail.progress);
 
             this.setCompletedState(progress);
+        }
+
+        convertToNumber(value) {
+            return Number(value);
         }
     }
 
